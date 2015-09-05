@@ -1,0 +1,29 @@
+DESCRIPTION=""
+HOMEPAGE=""
+LICENSE=""
+VERSION="3.19"
+SRC_URL="https://www.kernel.org/pub/linux/kernel/v3.x/$PN-$VERSION.tar.xz"
+REPO=""
+HASH=""
+
+configure ()
+{
+  make mrproper
+}
+
+build ()
+{
+  :
+}
+
+check ()
+{
+  :
+}
+
+merge ()
+{
+  make INSTALL_HDR_PATH=dest headers_install
+  find dest/include \( -name .install -o -name ..install.cmd \) -delete
+  cp -rv dest/include/* /usr/include
+}

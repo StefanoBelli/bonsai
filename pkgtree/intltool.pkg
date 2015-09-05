@@ -1,0 +1,26 @@
+DESCRIPTION=""
+URL=""
+VERSION="0.50.2"
+SRC_URL="http://launchpad.net/$PN/trunk/$VERSION/+download/$PN/$PN-$VERSION.tar.gz"
+HASH=""
+
+configure ()
+{
+  ./configure --prefix=/usr
+}
+
+build ()
+{
+  make
+}
+
+check ()
+{
+  make check
+}
+
+merge ()
+{
+  make install
+  #install -v -Dm644 doc/I18N-HOWTO /usr/share/doc/intltool-0.50.2/I18N-HOWTO
+}

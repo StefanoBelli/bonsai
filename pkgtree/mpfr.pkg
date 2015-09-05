@@ -1,0 +1,36 @@
+DESCRIPTION=""
+HOMEPAGE=""
+LICENSE=""
+VERSION="3.1.2"
+SRC_URL="http://www.mpfr.org/$PN-$VERSION/$PN-$VERSION.tar.xz"
+REPO=""
+HASH=""
+
+configure ()
+{
+  mkdir -pv /tmp/mpfr-src
+  cd /tmp/mpfr-src
+
+  tar -xf /src/mpfr-$VERSION.tar.xz --strip 1
+
+  patch -Np1 -i /src/mpfr-3.1.2-upstream_fixes-3.patch
+  ./configure --prefix=/usr --enable-thread-safe --docdir=/usr/share/doc/mpfr-$VERSION
+}
+
+build ()
+{
+  make
+  make html
+}
+
+check ()
+{
+  make check 2>&1 | tee mpfr-check-log
+  awk '/tests passed/{total+=$2} ; END{print total}' mpfr-check-log
+}
+
+merge ()
+{
+  make install
+  make install-html
+}

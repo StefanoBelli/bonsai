@@ -1,0 +1,29 @@
+DESCRIPTION=""
+HOMEPAGE=""
+LICENSE=""
+VERSION="2.5.39"
+URL="http://prdownloads.sourceforge.net/$PN/$PN-$VERSION.tar.xz"
+REPO=""
+HASH=""
+
+configure ()
+{
+  sed -i -e '/test-bison/d' tests/Makefile.in
+  ./configure --prefix=/usr --docdir=/usr/share/doc/$PN-$VERSION
+}
+
+build ()
+{
+  make
+}
+
+check ()
+{
+  make check
+}
+
+merge ()
+{
+  make install
+  ln -sv flex /usr/bin/lex
+}

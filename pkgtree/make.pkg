@@ -1,0 +1,27 @@
+DESCRIPTION=""
+HOMEPAGE=""
+LICENSE=""
+VERSION="4.1"
+SRC_URL="http://ftp.gnu.org/gnu/$PN/$PN-$VERSION.tar.xz"
+REPO=""
+HASH=""
+
+configure ()
+{
+  ./configure --prefix=/usr
+}
+
+build ()
+{
+  make
+}
+
+check ()
+{
+  make check
+}
+
+merge ()
+{
+  make install
+}

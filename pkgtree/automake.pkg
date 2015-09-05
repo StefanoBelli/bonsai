@@ -1,0 +1,28 @@
+DESCRIPTION=""
+HOMEPAGE=""
+LICENSE=""
+VERSION="1.15"
+URL="http://ftp.gnu.org/gnu/$PN/$PN-$VERSION.tar.bz2"
+REPO=""
+HASH=""
+
+configure ()
+{
+  ./configure --prefix=/usr --docdir=/usr/share/doc/$PN-$VERSION
+}
+
+build ()
+{
+  make
+  sed -i "s:./configure:LEXLIB=/usr/lib/libfl.a &:" t/lex-{clean,depend}-cxx.sh
+}
+
+check ()
+{
+  make -j4 check
+}
+
+merge ()
+{
+  make install
+}

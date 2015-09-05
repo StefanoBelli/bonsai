@@ -1,0 +1,29 @@
+DESCRIPTION=""
+HOMEPAGE=""
+LICENSE=""
+VERSION="1.2.8"
+SRC_URL="http://www.zlib.net/$PN-$VERSION.tar.xz"
+REPO=""
+HASH=""
+
+configure ()
+{
+  ./configure --prefix=/usr
+}
+
+build ()
+{
+  make
+}
+
+check ()
+{
+  make check
+}
+
+merge ()
+{
+  make install
+  mv -v /usr/lib/libz.so.* /lib
+  ln -sfv ../../lib/$(readlink /usr/lib/libz.so) /usr/lib/libz.so
+}

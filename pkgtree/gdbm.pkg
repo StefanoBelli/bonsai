@@ -1,0 +1,27 @@
+DESCRIPTION=""
+HOMEPAGE=""
+LICENSE=""
+VERSION="1.11"
+URL="http://ftp.gnu.org/gnu/$PN/$PN-$VERSION.tar.gz"
+REPO=""
+HASH=""
+
+configure ()
+{
+  ./configure --prefix=/usr  --enable-libgdbm-compat
+}
+
+build ()
+{
+  make
+}
+
+check ()
+{
+  make check
+}
+
+merge ()
+{
+  make install
+}

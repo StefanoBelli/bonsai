@@ -1,0 +1,29 @@
+DESCRIPTION=""
+HOMEPAGE=""
+LICENSE=""
+VERSION="22.21"
+URL="http://downloads.sourceforge.net/project/$PN/$PN/$PN-$VERSION.tar.xz"
+REPO=""
+HASH=""
+
+configure ()
+{
+  ./configure --prefix=/usr
+}
+
+build ()
+{
+  make
+}
+
+check ()
+{
+  make check
+}
+
+merge ()
+{
+  make install
+  mv -v /usr/bin/fuser   /bin
+  mv -v /usr/bin/killall /bin
+}

@@ -1,0 +1,31 @@
+DESCRIPTION=""
+HOMEPAGE=""
+LICENSE=""
+VERSION="2.1.0"
+URL="http://prdownloads.sourceforge.net/$PN/$PN-$VERSION.tar.gz"
+REPO=""
+HASH=""
+
+configure ()
+{
+  ./configure --prefix=/usr
+}
+
+build ()
+{
+  make
+}
+
+check ()
+{
+  make check
+}
+
+merge ()
+{
+  make install
+  #install -v -dm755 /usr/share/doc/expat-2.1.0
+  #install -v -m644 doc/*.{html,png,css} /usr/share/doc/expat-2.1.0
+}
+
+

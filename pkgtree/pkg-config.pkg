@@ -1,0 +1,30 @@
+DESCRIPTION=""
+HOMEPAGE=""
+LICENSE=""
+VERSION="0.28"
+URL="http://pkgconfig.freedesktop.org/releases/$PN-$VERSION.tar.gz"
+REPO=""
+HASH=""
+
+configure ()
+{
+  ./configure --prefix=/usr        \
+            --with-internal-glib \
+            --disable-host-tool  \
+            --docdir=/usr/share/doc/$PN-$VERSION
+}
+
+build ()
+{
+  make
+}
+
+check ()
+{
+  make check
+}
+
+merge ()
+{
+  make install
+}

@@ -1,0 +1,25 @@
+DESCRIPTION=""
+URL=""
+VERSION="458"
+SRC_URL="http://www.greenwoodsoftware.com/$PN/$PN-$VERSION.tar.gz"
+HASH=""
+
+configure ()
+{
+  ./configure --prefix=/usr --sysconfdir=/etc
+}
+
+build ()
+{
+  make
+}
+
+check ()
+{
+  :
+}
+
+merge ()
+{
+  make install
+}

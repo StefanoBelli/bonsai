@@ -1,0 +1,25 @@
+DESCRIPTION=""
+URL=""
+VERSION="3.0.4"
+SRC_URL="http://ftp.gnu.org/gnu/$PN/$PN-$VERSION.tar.xz"
+HASH=""
+
+configure ()
+{
+  ./configure --prefix=/usr --docdir=/usr/share/doc/$PN-$VERSION
+}
+
+build ()
+{
+  make
+}
+
+check ()
+{
+  make check
+}
+
+merge ()
+{
+  make install
+}

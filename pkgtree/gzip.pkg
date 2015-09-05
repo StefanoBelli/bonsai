@@ -1,0 +1,29 @@
+DESCRIPTION=""
+HOMEPAGE=""
+LICENSE=""
+VERSION="1.6"
+URL="http://ftp.gnu.org/gnu/$PN/$PN-$VERSION.tar.gz"
+REPO=""
+HASH=""
+
+configure ()
+{
+  ./configure --prefix=/usr --bindir=/bin
+}
+
+build ()
+{
+  make
+}
+
+check ()
+{
+  make check
+}
+
+merge ()
+{
+  make install
+  mv -v /bin/{gzexe,uncompress,zcmp,zdiff,zegrep} /usr/bin
+  mv -v /bin/{zfgrep,zforce,zgrep,zless,zmore,znew} /usr/bin
+}

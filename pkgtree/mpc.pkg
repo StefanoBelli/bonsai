@@ -1,0 +1,30 @@
+DESCRIPTION=""
+HOMEPAGE=""
+LICENSE=""
+VERSION="1.0.2"
+SRC_URL="http://www.multiprecision.org/$PN/download/$PN-$VERSION.tar.gz"
+REPO=""
+HASH=""
+
+configure ()
+{
+  ./configure --prefix=/usr --docdir=/usr/share/doc/mpc-$VERSION
+}
+
+build ()
+{
+  make
+  make html
+}
+
+check ()
+{
+  make check 2>&1 | tee mpc-check-log
+  awk '/tests passed/{total+=$2} ; END{print total}' mpc-check-log
+}
+
+merge ()
+{
+  make install
+  make install-html
+}

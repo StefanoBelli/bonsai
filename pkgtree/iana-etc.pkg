@@ -1,0 +1,27 @@
+DESCRIPTION=""
+HOMEPAGE=""
+LICENSE=""
+VERSION="2.30"
+URL="http://anduin.linuxfromscratch.org/sources/LFS/lfs-packages/conglomeration/$PN/$PN-$VERSION.tar.bz2"
+REPO=""
+HASH=""
+
+configure ()
+{
+  :
+}
+
+build ()
+{
+  make
+}
+
+check ()
+{
+  :
+}
+
+merge ()
+{
+  make install
+}

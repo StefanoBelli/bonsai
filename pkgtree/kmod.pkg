@@ -1,0 +1,38 @@
+DESCRIPTION=""
+HOMEPAGE=""
+LICENSE=""
+VERSION="19"
+SRC_URL="https://www.kernel.org/pub/linux/utils/net/$PN/$PN-$VERSION.tar.xz"
+REPO=""
+HASH=""
+
+configure ()
+{
+  ./configure --prefix=/usr          \
+              --bindir=/bin          \
+              --sysconfdir=/etc      \
+              --with-rootlibdir=/lib \
+              --with-xz              \
+              --with-zlib
+}
+
+build ()
+{
+  make
+}
+
+check ()
+{
+  make check
+}
+
+merge ()
+{
+  make install
+  
+  for target in depmod insmod lsmod modinfo modprobe rmmod; do
+    ln -sv ../bin/kmod /sbin/$target
+  done
+
+  ln -sv kmod /bin/lsmod
+}

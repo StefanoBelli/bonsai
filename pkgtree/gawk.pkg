@@ -1,0 +1,22 @@
+DESCRIPTION=""
+URL=""
+VERSION="4.1.1"
+SRC_URL="http://ftp.gnu.org/gnu/$PN/$PN-$VERSION.tar.xz"
+HASH=""
+
+configure ()
+{
+  ./configure --prefix=/usr --without-ssl
+}
+
+build ()
+{
+  make
+}
+
+merge ()
+{
+  make install
+  #mkdir -v /usr/share/doc/gawk-4.1.1
+  #cp -v doc/{awkforai.txt,*.{eps,pdf,jpg}} /usr/share/doc/gawk-4.1.1
+}

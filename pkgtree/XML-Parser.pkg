@@ -1,0 +1,27 @@
+DESCRIPTION=""
+HOMEPAGE=""
+LICENSE=""
+VERSION="2.44"
+URL="http://cpan.metacpan.org/authors/id/T/TO/TODDR/$PN-$VERSION.tar.bz2"
+REPO=""
+HASH=""
+
+configure ()
+{
+  perl Makefile.PL
+}
+
+build ()
+{
+  make
+}
+
+check ()
+{
+  make test
+}
+
+merge ()
+{
+  make install
+}

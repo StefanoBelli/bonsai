@@ -1,0 +1,30 @@
+DESCRIPTION=""
+URL=""
+VERSION="2.02~beta2"
+SRC_URL="http://alpha.gnu.org/gnu/$PN/$PN-$VERSION.tar.xz"
+HASH=""
+
+configure ()
+{
+  ./configure --prefix=/usr          \
+            --sbindir=/sbin        \
+            --sysconfdir=/etc      \
+            --disable-grub-emu-usb \
+            --disable-efiemu       \
+            --disable-werror
+}
+
+build ()
+{
+  make
+}
+
+check ()
+{
+  :
+}
+
+merge ()
+{
+  make install
+}

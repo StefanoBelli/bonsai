@@ -1,0 +1,29 @@
+DESCRIPTION=""
+HOMEPAGE=""
+LICENSE=""
+VERSION="2.25"
+SRC_URL="http://ftp.gnu.org/gnu/$PN/$PN-$VERSION.tar.bz2"
+REPO=""
+HASH=""
+
+configure ()
+{
+  prepare_src_ext_build
+  esxpect -c "spawn ls"
+  ../$PN-src/configure --prefix=/usr --enable-shared --disable-werror
+}
+
+build ()
+{
+  make tooldir=/usr
+}
+
+check ()
+{
+  make -k check
+}
+
+merge ()
+{
+  make tooldir=/usr install
+}

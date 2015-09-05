@@ -1,0 +1,20 @@
+DESCRIPTION=""
+URL=""
+VERSION="1.16.3"
+SRC_URL="http://ftp.gnu.org/gnu/$PN/$PN-$VERSION.tar.xz"
+HASH=""
+
+configure ()
+{
+  ./configure --prefix=/usr --without-ssl
+}
+
+build ()
+{
+  make
+}
+
+merge ()
+{
+  make install
+}

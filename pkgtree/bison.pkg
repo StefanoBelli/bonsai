@@ -1,0 +1,28 @@
+DESCRIPTION=""
+HOMEPAGE=""
+LICENSE=""
+VERSION="3.0.4"
+URL="http://ftp.gnu.org/gnu/$PN/$PN-$VERSION.tar.xz"
+REPO=""
+HASH=""
+
+configure ()
+{
+  ./configure --prefix=/usr --docdir=/usr/share/doc/$PN-$VERSION
+}
+
+build ()
+{
+  make
+}
+
+check ()
+{
+  make check
+}
+
+merge ()
+{
+  make install
+  ln -sv flex /usr/bin/lex
+}

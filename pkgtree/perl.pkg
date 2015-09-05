@@ -1,0 +1,37 @@
+DESCRIPTION=""
+HOMEPAGE=""
+LICENSE=""
+VERSION="5.20.2"
+URL="http://www.cpan.org/src/5.0/$PN-$VERSION.tar.bz2"
+REPO=""
+HASH=""
+
+configure ()
+{
+  #TODO fix
+  echo "127.0.0.1 localhost $(hostname)" > /etc/hosts
+  export BUILD_ZLIB=False
+  export BUILD_BZIP2=0
+  sh Configure -des -Dprefix=/usr                 \
+                    -Dvendorprefix=/usr           \
+                    -Dman1dir=/usr/share/man/man1 \
+                    -Dman3dir=/usr/share/man/man3 \
+                    -Dpager="/usr/bin/less -isR"  \
+                    -Duseshrplib
+}
+
+build ()
+{
+  make
+}
+
+check ()
+{
+  make -k test
+}
+
+merge ()
+{
+  make install
+  unset BUILD_ZLIB BUILD_BZIP2
+}

@@ -1,0 +1,35 @@
+DESCRIPTION=""
+HOMEPAGE=""
+LICENSE=""
+VERSION="2.2.52"
+URL="http://download.savannah.gnu.org/releases/$PN/$VERSION/$PN-$VERSION.src.tar.gz"
+REPO=""
+HASH=""
+
+configure ()
+{
+  sed -i -e 's|/@pkg_name@|&-@pkg_version@|' include/builddefs.ine
+  sed -i "s:| sed.*::g" test/{sbits-restore,cp,misc}.test
+  sed -i -e "/TABS-1;/a if (x > (TABS-1)) x = (TABS-1);" libacl/__acl_to_any_text.c
+
+  ./configure --prefix=/usr --libexecdir=/usr/lib
+}
+
+build ()
+{
+  make
+}
+
+check ()
+{
+  :
+}
+
+merge ()
+{
+  make install install-dev install-lib
+  chmod -v 755 /usr/lib/libacl.so
+
+  mv -v /usr/lib/libacl.so.* /lib
+  ln -sfv ../../lib/$(readlink /usr/lib/libacl.so) /usr/lib/libacl.so
+}

@@ -1,0 +1,31 @@
+DESCRIPTION=""
+HOMEPAGE=""
+LICENSE=""
+VERSION="2.24"
+SRC_URL="https://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/$PN-$VERSION.src.tar.xz"
+REPO=""
+HASH=""
+
+configure ()
+{
+  :
+}
+
+build ()
+{
+  make
+}
+
+check ()
+{
+  :
+}
+
+merge ()
+{
+  make RAISE_SETFCAP=no prefix=/usr install
+  chmod -v 755 /usr/lib/libcap.so
+
+  mv -v /usr/lib/libcap.so.* /lib
+  ln -sfv ../../lib/$(readlink /usr/lib/libcap.so) /usr/lib/libcap.so
+}

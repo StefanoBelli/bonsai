@@ -1,0 +1,26 @@
+HOMEPAGE=""
+LICENSE=""
+VERSION="2.4.6"
+URL="http://ftp.gnu.org/gnu/$PN/$PN-$VERSION.tar.xz"
+REPO=""
+HASH=""
+
+configure ()
+{
+  ./configure --prefix=/usr
+}
+
+build ()
+{
+  make
+}
+
+check ()
+{
+  :
+}
+
+merge ()
+{
+  make install
+}

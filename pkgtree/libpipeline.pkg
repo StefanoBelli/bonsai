@@ -1,0 +1,27 @@
+DESCRIPTION=""
+HOMEPAGE=""
+LICENSE=""
+VERSION="1.4.0"
+SRC_URL="http://download.savannah.gnu.org/releases/$PN/$PN-$VERSION.tar.xz"
+REPO=""
+HASH=""
+
+configure ()
+{
+  PKG_CONFIG_PATH=/tools/lib/pkgconfig ./configure --prefix=/usr
+}
+
+build ()
+{
+  make
+}
+
+check ()
+{
+  make check
+}
+
+merge ()
+{
+  make install
+}

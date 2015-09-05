@@ -1,0 +1,27 @@
+HOMEPAGE=""
+LICENSE=""
+VERSION="3.3"
+URL="http://ftp.gnu.org/gnu/$PN/$PN-$VERSION.tar.bz2"
+REPO=""
+HASH=""
+
+configure ()
+{
+  sed -i 's:= @mkdir_p@:= /bin/mkdir -p:' po/Makefile.in.in
+  ./configure --prefix=/usr
+}
+
+build ()
+{
+  make
+}
+
+check ()
+{
+  make -j4 check
+}
+
+merge ()
+{
+  make install
+}

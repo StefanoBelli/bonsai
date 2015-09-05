@@ -1,0 +1,29 @@
+DESCRIPTION=""
+HOMEPAGE=""
+LICENSE=""
+VERSION="4.2.2"
+URL="http://ftp.gnu.org/gnu/sed/$PN-$VERSION.tar.bz2"
+REPO=""
+HASH=""
+
+configure ()
+{
+  ./configure --prefix=/usr --bindir=/bin --htmldir=/usr/share/doc/$PN-$VERSION
+}
+
+build ()
+{
+  make
+  make html
+}
+
+check ()
+{
+  make check
+}
+
+merge ()
+{
+  make install
+  make -C doc install-html
+}

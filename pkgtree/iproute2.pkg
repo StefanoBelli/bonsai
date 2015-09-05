@@ -1,0 +1,29 @@
+DESCRIPTION=""
+HOMEPAGE=""
+LICENSE=""
+VERSION="3.19.0"
+SRC_URL="https://www.kernel.org/pub/linux/utils/net/$PN/$PN-$VERSION.tar.xz"
+REPO=""
+HASH=""
+
+configure ()
+{
+  sed -i '/^TARGETS/s@arpd@@g' misc/Makefile
+  sed -i /ARPD/d Makefile
+  sed -i 's/arpd.8//' man/man8/Makefile
+}
+
+build ()
+{
+  make
+}
+
+check ()
+{
+  :
+}
+
+merge ()
+{
+  make DOCDIR=/usr/share/doc/$PN-$VERSION install
+}

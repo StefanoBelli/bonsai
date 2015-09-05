@@ -1,0 +1,30 @@
+DESCRIPTION=""
+HOMEPAGE=""
+LICENSE=""
+VERSION="6.0.0a"
+SRC_URL="http://ftp.gnu.org/gnu/$PN/$PN-$VERSION.tar.xz"
+REPO=""
+HASH=""
+
+configure ()
+{
+  ./configure --prefix=/usr --enable-cxx --docdir=/usr/share/doc/$VERSION
+}
+
+build ()
+{
+  make
+  make html
+}
+
+check ()
+{
+  make check 2>&1 | tee gmp-check-log
+  awk '/tests passed/{total+=$2} ; END{print total}' gmp-check-log
+}
+
+merge ()
+{
+  make install
+  make install-html
+}

@@ -1,0 +1,38 @@
+DESCRIPTION=""
+HOMEPAGE=""
+LICENSE=""
+VERSION="4.3.30"
+URL="http://alpha.gnu.org/gnu/$PN/$PN-$VERSION.tar.xz"
+REPO=""
+HASH=""
+
+configure ()
+{
+  patch -Np1 -i $SRC_DIR/bash-4.3.30-upstream_fixes-1.patch
+./configure --prefix=/usr                       \
+            --bindir=/bin                       \
+            --docdir=/usr/share/doc/$PN-$VERSION \
+            --without-bash-malloc               \
+            --with-installed-readline
+}
+
+build ()
+{
+  make
+}
+
+check ()
+{
+  #chown -Rv nobody .
+  su nobody -s /bin/bash -c "PATH=$PATH make tests"
+}
+
+merge ()
+{
+  make install
+}
+
+extra () 
+{
+  msg "run \"exec /bin/bash --login +h\" to switch to the new bash executable"
+}
