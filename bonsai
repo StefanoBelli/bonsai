@@ -7,11 +7,12 @@ source /usr/bonsai/_build.sh
 
 opt_install ()
 {
+	check_user
   info "Bonsai-$BONSAI_VERSION"
 
   params=${*//\'}
   params=${params/ -- / }
-  info "Installing: $params"
+  info "* Installing: $params"
   for elem in $params ;do
     PN=$elem
     export PN
@@ -23,7 +24,8 @@ opt_install ()
     PKG="$BONSAI_DIR/pkgtree/${PN}.pkg"
     if [ ! -f "$PKG" ]; then
       pwd
-      msg "package \"$PN\" not found!"
+      msg "* This package: \"$PN\" was not found!"
+			msg "* To check availible packages, use --packages option"
       exit 1
     fi
 
@@ -37,24 +39,24 @@ opt_install ()
     
     prepare
     
-    info "configure phase"
+    info "* Source configure phase..."
     configure
     
-    info "building phase"
+    info "* Source build phase..."
     build
     
     if [ $check_flag == yes ];then
-      info "checking phase"
+      info "* Checking phase..."
       check
     fi
     
-    info "merge phase"
+    info "* Install/Merge phase..."
     merge
     
     extra
     
     if [ $noclean_flag == no ];then
-      info "cleaning..."
+      info "* Cleaning..."
       clean
     else
       cd -
@@ -66,6 +68,9 @@ opt_install ()
 opt_help()
 {
   info "$BONSAI_NAME-$BONSAI_VERSION\n\
+Bonsai package manager - Help page
++------------------------------------------+
+     <opt> [arg]    [action]        {status}
 bonsai -I pkgname -> install          [DONE]
 bonsai -R pkgname -> remove           [TODO]
 bonsai -Q pattern -> search           [TODO]
@@ -73,19 +78,34 @@ bonsai -L         -> list installed.  [TODO]
 bonsai -U         -> update system    [TODO]
 bonsai -S         -> sync files.      [TODO]
 
---pretend / -p                        [DONE]
---quiet / -q no compiling output      [TODO]
---version / -v show version           [DONE]
---help / -h  show help                [DONE]
---noclean / -n do not run clean       [DONE]
---check / -c run checks after build.  [DONE]"
++------------------------------------------+
+
+Other arguments
++-------------------------------------------------+
+--pretend / -p                               [DONE]
+--quiet / -q     -> no compiling output      [TODO]
+--version / -v   -> show version             [DONE]
+--help / -h      -> show help                [DONE]
+--noclean / -n   -> do not run clean         [DONE]
+--check / -c     -> run checks after build.  [DONE]
+--packages       -> lists all avail. pkgs    [DONE]
++-------------------------------------------------+ "
   exit 0
 }
 
 opt_version()
 {
-  info "Bonsai-$BONSAI_VERSION"
+  info "Using bonsai version: $BONSAI_NAME-$BONSAI_VERSION"
   exit 0
+}
+
+opt_pkglist()
+{
+	LIST_PACKAGES=$(ls $BONSAI_DIR/pkgtree -l | awk '{ print $9 }' | sed 's/.pkg//g')
+	info "Bonsai-$BONSAI_VERSION"
+	info "\nAvailible packages\n**********"
+	info "$LIST_PACKAGES"
+	info "**********\nAvailible packages"
 }
 
 install_flag=no
@@ -96,7 +116,7 @@ check_flag=no
 pretend_flag=no
 
 if ! options=$(getopt -o I:R:Q:ncphv -l \
-             install:,remove:,query:,noclean,check,pretend,help,version -- "$@")
+             install:,remove:,query:,noclean,check,pretend,help,version,packages -- "$@")
 then
     exit 1
 fi
@@ -114,6 +134,7 @@ do
     -p|--pretend) pretend_flag=yes ;;
     -h|--help) opt_help ;;
     -v|--version) opt_version ;;
+		--packages) opt_pkglist ;;
     (--) shift; break;;
     (-*) echo "$BONSAI_NAME: error - unrecognized option $1" 1>&2; exit 1;;
     (*) break;;
