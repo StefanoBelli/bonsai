@@ -5,7 +5,11 @@ install:
 
 uninstall:
 	rm -r /usr/bonsai && echo "* /usr/bonsai deleted (and all its content)" || exit 1
-	rm /usr/bin/bonsai && echo "* Bonsai package manager was uninstalled" || exit 2
+	rm /usr/bin/bonsai && echo "* Bonsai package manager was uninstalled... Bye!" || exit 2
+
+uninstall_keep_dir:
+	echo "* Removing Bonsai package manager keeping /usr/bonsai directory and all its files..." 
+	rm /usr/bin/bonsai && echo "* Bonsai package manager was uninstalled, keeping /usr/bonsai... Bye!" || exit 2
 
 .PHONY:
-	install,uninstall
+	install,uninstall,uninstall_keep_dir
