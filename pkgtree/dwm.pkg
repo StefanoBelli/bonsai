@@ -1,0 +1,21 @@
+DESCRIPTION="DWM Tiling Window Manager"
+HOMEPAGE=""
+LICENSE=""
+VERSION="6.0"
+SRC_URL="http://dl.suckless.org/dwm/dwm-6.0.tar.gz"
+
+build()
+{
+	make
+}
+
+check()
+{
+  :
+}
+
+merge()
+{
+  make install
+}
+

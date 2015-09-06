@@ -6,6 +6,17 @@ SRC_DIR="/usr/src"
 SRC_FILE=""
 SRC_URL=""
 
+check_user()
+{
+				if [[ $USER == "root" ]];
+				then
+								echo ""
+				else
+								info "* Hey, $USER, you cannot use this option unless you are root\n"
+								exit 3
+				fi
+}
+
 _echoc ()
 {
   echo -e "\E["$1"m$2\E[0m";
@@ -27,29 +38,28 @@ setup ()
    SRC_FILE="$SRC_DIR/$PN-$VERSION"
    #fi
 
-   info "\nsetup $PN-$VERSION...\n"
+   info "\n* Setup:  $PN-$VERSION...\n"
 }
 
 prepare ()
 {
-   fetch_pkg
-   prepare_src
+   fetch_pkg && prepare_src || msg "* Fetch Failed\n"
 }
 
 fetch_pkg ()
 {
   if [ ! -f $SRC_FILE.* ];then
-    info "fetching package..."
+    info "* Trying to fetch $SRC_FILE"
     wget -P $SRC_DIR $SRC_URL
   fi
 }
 
 prepare_src ()
 {
-  info "unpacking src..."
+  info "* Unpacking sources..."
 
   if [ -e $BUILD_DIR/$PN-src ]; then
-    info "cleaning src directory"
+    info "* Cleaning sources directory"
     rm -rf $BUILD_DIR/$PN-src
   fi
   mkdir -pv $BUILD_DIR/$PN-src
@@ -76,7 +86,7 @@ build ()
 
 check ()
 {
-   info "sorry, no tests available"
+   info "* Sorry, no tests available"
 }
 
 merge ()
@@ -91,7 +101,7 @@ extra ()
 
 clean ()
 {
-  info "cleaning build directories..."
+  info "* Cleaning build tmp directories..."
   rm -rf $BUILD_DIR/$PN-{src,build}
   cd -
 }
