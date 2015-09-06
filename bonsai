@@ -1,7 +1,7 @@
 #!/bin/bash
 
 BONSAI_NAME="bonsai"
-BONSAI_VERSION="0.0.3"
+BONSAI_VERSION="0.0.4"
 
 source /usr/bonsai/_build.sh
 
@@ -73,7 +73,8 @@ Bonsai package manager - Help page
      <opt> [arg]    [action]        {status}
 bonsai -I pkgname -> install          [DONE]
 bonsai -R pkgname -> remove           [TODO]
-bonsai -Q pattern -> search           [TODO]
+bonsai -Q pattern -> search           [DONE]
+bonsai -D pattern -> search + desc    [DONE]
 bonsai -L         -> list installed.  [TODO]
 bonsai -U         -> update system    [TODO]
 bonsai -S         -> sync files.      [TODO]
@@ -108,15 +109,55 @@ opt_pkglist()
 	info "**********\nAvailible packages"
 }
 
+opt_query()
+{
+	param=${*//\'}
+	param=${param/ -- /}
+	SEARCH_PKG=$(ls $BONSAI_DIR/pkgtree -l | awk '{ print $9 }' | sed 's/.pkg//g' | grep $param)
+	QUERY_RES=$SEARCH_PKG
+	info "Bonsai-$BONSAI_VERSION"
+	info "* You searched for: $param\n"
+	for i in $QUERY_RES; 
+	do
+				 echo -n "--> "; info $i
+	done
+}
+
+list_desc()
+{
+	[[ $DESCRIPTION == "" ]] && DESCRIPTION="N/A"
+	[[ $HOMEPAGE == "" ]] && HOMEPAGE="N/A"
+	[[ $VERSION == "" ]] && VERSION="N/A"
+	[[ $LICENCE == "" ]] && LICENCE="N/A"
+
+	echo -n "Name: " ;info "$param" | sed "s/.pkg//"
+	echo -n "Description: ";info "$DESCRIPTION" 
+	echo -n "Homepage: " ;info "$HOMEPAGE"
+	echo -n "Version: " ;info "$VERSION" 
+	echo -n "License: " ;info "$LICENCE"
+
+  echo ""
+}
+
+opt_querydesc()
+{
+	param=${*//\'}
+	param="${param/ -- /}.pkg"
+	info "Bonsai-$BONSAI_VERSION"
+	info "* You searched description for: $param\n" | sed "s/.pkg//"
+	source $BONSAI_DIR/pkgtree/$param && list_desc || exit 3
+}
+
 install_flag=no
 remove_flag=no
 query_flag=no
 noclean_flag=no
 check_flag=no
 pretend_flag=no
+searchdesc_flag=no
 
-if ! options=$(getopt -o I:R:Q:ncphv -l \
-             install:,remove:,query:,noclean,check,pretend,help,version,packages -- "$@")
+if ! options=$(getopt -o I:R:Q:D:ncphv -l \
+             install:,remove:,query:,desc:,noclean,check,pretend,help,version,packages -- "$@")
 then
     exit 1
 fi
@@ -127,8 +168,9 @@ while [ $# -gt 0 ]
 do
     case $1 in
     -I|--install) shift; opt_install "$*" ;;
-    -R|--remove) remove_flag=yes; info "not implemented" shift;;
-    -Q|--query) query_flag=yes ; info "not implmented" shift;;
+    -R|--remove) remove_flag=yes; info "* This operation is not implemented yet." shift;;
+    -Q|--query) query_flag=yes ; opt_query "$2" ;;
+		-D|--desc) searchdesc_flag=yes ; opt_querydesc "$2" ;;
     -n|--noclean) noclean_flag=yes ;;
     -c|--check) check_flag=yes ;;
     -p|--pretend) pretend_flag=yes ;;

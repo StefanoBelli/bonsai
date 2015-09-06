@@ -15,13 +15,20 @@ Uninstall...
 root@machine:~/Devel/Shellscript/bonsai # make uninstall -s
 ~~~
 
-The '*-s*' make option doesn't show instruction (echoing)
+Uninstall keeping directory (/usr/bonsai)
+~~~
+root@machine:~/Devel/Shellscript/bonsai # make uninstall_keep_dir -s 
+~~~
 
-### Features:
+The '*-s*' make option doesn't show instruction (already echoing)
+
+### Features [0.0.4]:
 
 Bonsai has a bit working options:
   
 	- Install(-I/--install: get source,extract,configure,compile,(check),(extras),clean)
+	- Query(-Q/--query: search for availible pkgs)
+	- Description(-D/--desc: search for a package and shows details)
 
 Other arguments:
   
@@ -36,7 +43,6 @@ Features listed above are *Working*
 Features that are going to be implemented:
 	
 	- Remove (-R/--remove: removes installed packages)
-	- Search (-Q: search for a package)
 	- Installed (-L: lists installed packages)
 	- Update system (-U: updates your system)
 	- Sync pkgtree (-S: sync package tree)
