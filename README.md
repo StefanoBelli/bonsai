@@ -5,22 +5,43 @@ This project is born while I was building my first LFS-7.7-systemd system. Some 
 The program currently works after the first chroot.
 I'm planning to enable the build of /tools. I have some scripts for that but I still have to integrate in the pkg manager.
 
-### Features:
+### How to install/uninstall bonsai:
 ~~~
-bonsai -I pkgname -> install          [DONE]
-bonsai -R pkgname -> remove           [TODO]
-bonsai -Q pattern -> search           [TODO]
-bonsai -L         -> list installed.  [TODO]
-bonsai -U         -> update system    [TODO]
-bonsai -S         -> sync files.      [TODO]
+root@machine:~/Devel/Shellscript/bonsai # make -s
+~~~
 
---pretend / -p                        [DONE]
---quiet / -q no compiling output      [TODO]
---version / -v show version           [DONE]
---help / -h  show help                [DONE]
---noclean / -n do not run clean       [DONE]
---check / -c run checks after build.  [DONE]
+Uninstall...
 ~~~
+root@machine:~/Devel/Shellscript/bonsai # make uninstall -s
+~~~
+
+The '*-s*' make option doesn't show instruction (echoing)
+
+### Features:
+
+Bonsai has a bit working options:
+  
+	- Install(-I/--install: get source,extract,configure,compile,(check),(extras),clean)
+
+Other arguments:
+  
+	- Pretend (--pretend)
+	- Version (--version: shows bonsai version)
+	- Help (--help: shows bonsai help [more detailed])
+	- Nocheck (--nocheck: skips compiled-packages checks)
+	- Packages (--packages: shows availible packages) 
+
+Features listed above are *Working*
+
+Features that are going to be implemented:
+	
+	- Remove (-R/--remove: removes installed packages)
+	- Search (-Q: search for a package)
+	- Installed (-L: lists installed packages)
+	- Update system (-U: updates your system)
+	- Sync pkgtree (-S: sync package tree)
+
+Features listed above are *WIP*
 
 ### Example:
 ~~~
@@ -37,4 +58,39 @@ checking for a BSD-compatible install... /usr/bin/install -c
 checking whether build environment is sane... yes
 checking for a thread-safe mkdir -p... /bin/mkdir -p
 checking for gawk... gawk
+~~~
+
+### Added packages:
+
+ - DWM (06/09/2015) [DD/MM/YYYY]
+
+### How to add a package file:
+~~~
+DESCRIPTION="" 
+HOMEPAGE=""
+LICENSE=""
+VERSION=""
+SRC_URL="" #this contain direct link to package
+REPO=""
+HASH=""
+
+configure()
+{
+	# Configure source instructions here, if package does not need or whatever reason leave ':'
+}
+
+build()
+{
+	# Compile build instructions here
+}
+
+check()
+{
+	# Checks instructions, if package does not need or whatever reason leave ':'
+}
+
+merge()
+{
+	# Merging to system instructions
+}
 ~~~
