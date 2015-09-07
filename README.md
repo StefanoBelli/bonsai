@@ -5,6 +5,10 @@ This project is born while I was building my first LFS-7.7-systemd system. Some 
 The program currently works after the first chroot.
 I'm planning to enable the build of /tools. I have some scripts for that but I still have to integrate in the pkg manager.
 
+### LATEST NEWS!
+ 
+ - Package tree repository has created! { github.com/viralex/bonsai-pkgtree} , to keep updated run "bonsai -S" as root :D
+
 ### How to install/uninstall bonsai:
 ~~~
 root@machine:~/Devel/Shellscript/bonsai # make -s
@@ -22,13 +26,15 @@ root@machine:~/Devel/Shellscript/bonsai # make uninstall_keep_dir -s
 
 The '*-s*' make option doesn't show instruction (already echoing)
 
-### Features [0.0.4]:
+### Features [0.0.6]:
 
 Bonsai has a bit working options:
   
 	- Install(-I/--install: get source,extract,configure,compile,(check),(extras),clean)
 	- Query(-Q/--query: search for availible pkgs)
 	- Description(-D/--desc: search for a package and shows details)
+	- List installed packages *BY BONSAI ONLY* (-L/--installed: installed packages from bonsai)
+	- Repository syncing (-S: sync repository from git repo)
 
 Other arguments:
   
@@ -42,10 +48,9 @@ Features listed above are *Working*
 
 Features that are going to be implemented:
 	
-	- Remove (-R/--remove: removes installed packages)
-	- Installed (-L: lists installed packages)
-	- Update system (-U: updates your system)
-	- Sync pkgtree (-S: sync package tree)
+	- [TODO/NEXT]Remove (-R/--remove: removes installed packages)
+	- [TODO]Update system (-U: updates your system)
+	- [TODO]Quiet installing (-Q: no output)
 
 Features listed above are *WIP*
 

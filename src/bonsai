@@ -1,17 +1,16 @@
 #!/bin/bash
 
 BONSAI_NAME="Bonsai"
-BONSAI_VERSION="0.0.5"
+BONSAI_VERSION="0.0.6"
 
 source /usr/bonsai/_config.sh
 source /usr/bonsai/_functions.sh
+source /usr/bonsai/_build.sh
 
 opt_install ()
 {
-  source /usr/bonsai/_build.sh
-  
   check_user
-  info "$BONSAI_NAME-$BONSAI_VERSION"
+  info "Bonsai-$BONSAI_VERSION"
 
   params=${*//\'}
   params=${params/ -- / }
@@ -36,17 +35,17 @@ opt_install ()
 
     setup
     if [ $pretend_flag == yes ];then
-      fetch_pkg
+      fetch_pkg && echo "" || opfault "fetch"
       exit 0
     fi
     
     prepare
     
     info "* Source configure phase..."
-    configure
+    configure && echo "" || opfault "configure"
     
     info "* Source build phase..."
-    build
+    build && echo "" || opfault "build"
     
     if [ $check_flag == yes ];then
       info "* Checking phase..."
@@ -54,7 +53,7 @@ opt_install ()
     fi
     
     info "* Install/Merge phase..."
-    merge
+    merge && echo "" || opfault "mergepkg"
     
     extra
     
@@ -64,6 +63,7 @@ opt_install ()
     else
       cd -
     fi
+		mem_installed 
   done
   exit 0
 }
@@ -78,9 +78,9 @@ bonsai -I pkgname -> install          [DONE]
 bonsai -R pkgname -> remove           [TODO]
 bonsai -Q pattern -> search           [DONE]
 bonsai -D pattern -> search + desc    [DONE]
-bonsai -L         -> list installed.  [TODO]
+bonsai -L         -> list installed.  [DONE]
 bonsai -U         -> update system    [TODO]
-bonsai -S         -> sync files.      [TODO]
+bonsai -S         -> sync files.      [DONE]
 
 +------------------------------------------+
 
@@ -127,6 +127,7 @@ opt_query()
 
 opt_sync ()
 {
+	check_user
   info "$BONSAI_NAME-$BONSAI_VERSION"
   info "* Syncing pkgtree: $BONSAI_TREE"
 
@@ -141,7 +142,7 @@ opt_sync ()
      fi
      popd >/dev/null
   else
-     info "* git is not available, please install!"
+     info "* Git is not available, please install!"
      exit 1
   fi
 }
@@ -151,13 +152,13 @@ list_desc()
   [[ $DESCRIPTION == "" ]] && DESCRIPTION="N/A"
   [[ $HOMEPAGE == "" ]] && HOMEPAGE="N/A"
   [[ $VERSION == "" ]] && VERSION="N/A"
-  [[ $LICENCE == "" ]] && LICENCE="N/A"
+  [[ $LICENSE == "" ]] && LICENSE="N/A"
 
   echo -n "Name: " ;info "$param" | sed "s/.pkg//"
   echo -n "Description: ";info "$DESCRIPTION"
   echo -n "Homepage: " ;info "$HOMEPAGE"
   echo -n "Version: " ;info "$VERSION"
-  echo -n "License: " ;info "$LICENCE"
+  echo -n "License: " ;info "$LICENSE"
 
   echo ""
 }
@@ -171,6 +172,17 @@ opt_querydesc()
   source $BONSAI_DIR/pkgtree/$param && list_desc || exit 3
 }
 
+opt_listinstalled()
+{
+	check_user
+	LISTDIR=$(ls -l $INSTALLED_DIR | awk '{ print $9 }')
+	info "Bonsai-$BONSAI_VERSION"
+	info "* Installed packages by Bonsai\n"
+	for i in $LISTDIR;
+	do
+					echo -n "--> "; info $i
+	done
+}
 install_flag=no
 remove_flag=no
 query_flag=no
@@ -179,8 +191,8 @@ check_flag=no
 pretend_flag=no
 searchdesc_flag=no
 
-if ! options=$(getopt -o I:R:Q:D:Sncphv -l \
-             install:,remove:,query:,desc:,sync,noclean,check,pretend,help,version,packages -- "$@")
+if ! options=$(getopt -o I:R:Q:D:SLncphv -l \
+             install:,remove:,query:,desc:,sync,noclean,check,pretend,help,version,packages,installed -- "$@")
 then
     exit 1
 fi
@@ -201,6 +213,7 @@ do
     -h|--help) opt_help ;;
     -v|--version) opt_version ;;
     --packages) opt_pkglist ;;
+    -L|--installed) opt_listinstalled;;
     (--) shift; break;;
     (-*) echo "$BONSAI_NAME: error - unrecognized option $1" 1>&2; exit 1;;
     (*) break;;
