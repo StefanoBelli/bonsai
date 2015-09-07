@@ -8,6 +8,19 @@ I'm planning to enable the build of /tools. I have some scripts for that but I s
 ### LATEST NEWS!
  
  - Package tree repository has created! { github.com/viralex/bonsai-pkgtree} , to keep updated run "bonsai -S" as root :D
+ - Configuration file of bonsai is now */etc/bonsai/bonsai.conf*
+
+### WARNING:
+These release are *NOT* for daily use!
+This is development stage! 
+We will get a full-working release when 0.1 is reached!
+And... another thing... 
+*IF YOU TRY TO INSTALL PACKAGES AFTER BONSAI INSTALL, YOU WILL FAIL! SO, BEFORE YOU START USING BONSAI, 
+SYNC REPOSITORIES! WITH THIS COMMAND:*
+~~~
+root:/ # bonsai -S
+~~~
+We will fix packages only after the package manager reaches daily-usage release! (High priority: 0.1)
 
 ### How to install/uninstall bonsai:
 ~~~
@@ -26,7 +39,7 @@ root@machine:~/Devel/Shellscript/bonsai # make uninstall_keep_dir -s
 
 The '*-s*' make option doesn't show instruction (already echoing)
 
-### Features [0.0.6]:
+### Features [0.0.6-1]:
 
 Bonsai has a bit working options:
   

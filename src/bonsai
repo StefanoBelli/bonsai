@@ -1,9 +1,9 @@
 #!/bin/bash
 
 BONSAI_NAME="Bonsai"
-BONSAI_VERSION="0.0.6"
+BONSAI_VERSION="0.0.6-1"
 
-source /usr/bonsai/_config.sh
+source /etc/bonsai/bonsai.conf
 source /usr/bonsai/_functions.sh
 source /usr/bonsai/_build.sh
 
