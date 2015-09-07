@@ -1,14 +1,17 @@
 #!/bin/bash
 
-BONSAI_NAME="bonsai"
-BONSAI_VERSION="0.0.4"
+BONSAI_NAME="Bonsai"
+BONSAI_VERSION="0.0.5"
 
-source /usr/bonsai/_build.sh
+source /usr/bonsai/_config.sh
+source /usr/bonsai/_functions.sh
 
 opt_install ()
 {
-	check_user
-  info "Bonsai-$BONSAI_VERSION"
+  source /usr/bonsai/_build.sh
+  
+  check_user
+  info "$BONSAI_NAME-$BONSAI_VERSION"
 
   params=${*//\'}
   params=${params/ -- / }
@@ -25,7 +28,7 @@ opt_install ()
     if [ ! -f "$PKG" ]; then
       pwd
       msg "* This package: \"$PN\" was not found!"
-			msg "* To check availible packages, use --packages option"
+      msg "* To check availible packages, use --packages option"
       exit 1
     fi
 
@@ -68,7 +71,7 @@ opt_install ()
 opt_help()
 {
   info "$BONSAI_NAME-$BONSAI_VERSION\n\
-Bonsai package manager - Help page
+$BONSAI_NAME package manager - Help page
 +------------------------------------------+
      <opt> [arg]    [action]        {status}
 bonsai -I pkgname -> install          [DONE]
@@ -102,50 +105,70 @@ opt_version()
 
 opt_pkglist()
 {
-	LIST_PACKAGES=$(ls $BONSAI_DIR/pkgtree -l | awk '{ print $9 }' | sed 's/.pkg//g')
-	info "Bonsai-$BONSAI_VERSION"
-	info "\nAvailible packages\n**********"
-	info "$LIST_PACKAGES"
-	info "**********\nAvailible packages"
+  LIST_PACKAGES=$(ls $BONSAI_DIR/pkgtree -l | awk '{ print $9 }' | sed 's/.pkg//g')
+  info "$BONSAI_NAME-$BONSAI_VERSION"
+  info "\nAvailible packages\n**********"
+  info "$LIST_PACKAGES"
+  info "**********\nAvailible packages"
 }
 
 opt_query()
 {
-	param=${*//\'}
-	param=${param/ -- /}
-	SEARCH_PKG=$(ls $BONSAI_DIR/pkgtree -l | awk '{ print $9 }' | sed 's/.pkg//g' | grep $param)
-	QUERY_RES=$SEARCH_PKG
-	info "Bonsai-$BONSAI_VERSION"
-	info "* You searched for: $param\n"
-	for i in $QUERY_RES; 
-	do
-				 echo -n "--> "; info $i
-	done
+  param=${*//\'}
+  param=${param/ -- /}
+  SEARCH_PKG=$(ls $BONSAI_DIR/pkgtree -l | awk '{ print $9 }' | sed 's/.pkg//g' | grep $param)
+  QUERY_RES=$SEARCH_PKG
+  info "$BONSAI_NAME-$BONSAI_VERSION"
+  info "* You searched for: $param\n"
+  for i in $QUERY_RES ;do
+         echo -n "--> "; info $i
+  done
+}
+
+opt_sync ()
+{
+  info "$BONSAI_NAME-$BONSAI_VERSION"
+  info "* Syncing pkgtree: $BONSAI_TREE"
+
+  if which git >/dev/null; then
+     pushd . >/dev/null
+     cd $BONSAI_TREE
+     if [ -d .git ]; then
+       git pull
+     else
+       msg "Cloning repo to $BONSAI_TREE"
+       git clone $BONSAI_GIT_REPO ./
+     fi
+     popd >/dev/null
+  else
+     info "* git is not available, please install!"
+     exit 1
+  fi
 }
 
 list_desc()
 {
-	[[ $DESCRIPTION == "" ]] && DESCRIPTION="N/A"
-	[[ $HOMEPAGE == "" ]] && HOMEPAGE="N/A"
-	[[ $VERSION == "" ]] && VERSION="N/A"
-	[[ $LICENCE == "" ]] && LICENCE="N/A"
+  [[ $DESCRIPTION == "" ]] && DESCRIPTION="N/A"
+  [[ $HOMEPAGE == "" ]] && HOMEPAGE="N/A"
+  [[ $VERSION == "" ]] && VERSION="N/A"
+  [[ $LICENCE == "" ]] && LICENCE="N/A"
 
-	echo -n "Name: " ;info "$param" | sed "s/.pkg//"
-	echo -n "Description: ";info "$DESCRIPTION" 
-	echo -n "Homepage: " ;info "$HOMEPAGE"
-	echo -n "Version: " ;info "$VERSION" 
-	echo -n "License: " ;info "$LICENCE"
+  echo -n "Name: " ;info "$param" | sed "s/.pkg//"
+  echo -n "Description: ";info "$DESCRIPTION"
+  echo -n "Homepage: " ;info "$HOMEPAGE"
+  echo -n "Version: " ;info "$VERSION"
+  echo -n "License: " ;info "$LICENCE"
 
   echo ""
 }
 
 opt_querydesc()
 {
-	param=${*//\'}
-	param="${param/ -- /}.pkg"
-	info "Bonsai-$BONSAI_VERSION"
-	info "* You searched description for: $param\n" | sed "s/.pkg//"
-	source $BONSAI_DIR/pkgtree/$param && list_desc || exit 3
+  param=${*//\'}
+  param="${param/ -- /}.pkg"
+  info "$BONSAI_NAME-$BONSAI_VERSION"
+  info "* You searched description for: $param\n" | sed "s/.pkg//"
+  source $BONSAI_DIR/pkgtree/$param && list_desc || exit 3
 }
 
 install_flag=no
@@ -156,8 +179,8 @@ check_flag=no
 pretend_flag=no
 searchdesc_flag=no
 
-if ! options=$(getopt -o I:R:Q:D:ncphv -l \
-             install:,remove:,query:,desc:,noclean,check,pretend,help,version,packages -- "$@")
+if ! options=$(getopt -o I:R:Q:D:Sncphv -l \
+             install:,remove:,query:,desc:,sync,noclean,check,pretend,help,version,packages -- "$@")
 then
     exit 1
 fi
@@ -170,13 +193,14 @@ do
     -I|--install) shift; opt_install "$*" ;;
     -R|--remove) remove_flag=yes; info "* This operation is not implemented yet." shift;;
     -Q|--query) query_flag=yes ; opt_query "$2" ;;
-		-D|--desc) searchdesc_flag=yes ; opt_querydesc "$2" ;;
+    -D|--desc) searchdesc_flag=yes ; opt_querydesc "$2" ;;
+    -S|--sync) opt_sync ;;
     -n|--noclean) noclean_flag=yes ;;
     -c|--check) check_flag=yes ;;
     -p|--pretend) pretend_flag=yes ;;
     -h|--help) opt_help ;;
     -v|--version) opt_version ;;
-		--packages) opt_pkglist ;;
+    --packages) opt_pkglist ;;
     (--) shift; break;;
     (-*) echo "$BONSAI_NAME: error - unrecognized option $1" 1>&2; exit 1;;
     (*) break;;

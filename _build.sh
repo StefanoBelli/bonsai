@@ -1,20 +1,11 @@
 #!/bin/bash
 
-BONSAI_DIR="/usr/bonsai"
-BUILD_DIR="/var/tmp"
-SRC_DIR="/usr/src"
-SRC_FILE=""
-SRC_URL=""
-
 check_user()
 {
-				if [[ $USER == "root" ]];
-				then
-								echo ""
-				else
-								info "* Hey, $USER, you cannot use this option unless you are root\n"
-								exit 3
-				fi
+  if [ $UID -ne 0 ];then
+    info "* Hey, $USER, you cannot use this option unless you are root\n"
+    exit 3
+  fi
 }
 
 _echoc ()
