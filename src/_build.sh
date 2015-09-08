@@ -4,51 +4,28 @@ VAR_DIR=/var/bonsai
 
 opfault()
 {
-	TYPE=$1
-	if [[ $TYPE == "fetch" ]]; 
-	then
-					msg "* Fetch phase failed!! Aborting..."
-					exit 1
-	elif [[ $TYPE == "prepare" ]];
-	then
-					msg "* Prepare phase failed! Aborting..."
-					exit 2
-	elif [[ $TYPE == "configure" ]];
-	then
-					msg "* Configure phase failed! Aborting..."
-					exit 3
-	elif [[ $TYPE == "build" ]];
-	then
-					msg "* Build/Compile phase failed! Aborting..."
-					exit 4
-	elif [[ $TYPE == "mergepkg" ]];
-	then
-					msg "* Merge/Install phase failed! Aborting..."
-					exit 5
-	fi
-}
-
-check_user()
-{
-  if [ $UID -ne 0 ];then
-    info "* Hey, $USER, you cannot use this option unless you are root\n"
+  TYPE=$1
+  if [[ $TYPE == "fetch" ]];
+  then
+    msg "* Fetch phase failed!! Aborting..."
+    exit 1
+  elif [[ $TYPE == "prepare" ]];
+  then
+    msg "* Prepare phase failed! Aborting..."
+    exit 2
+  elif [[ $TYPE == "configure" ]];
+  then
+    msg "* Configure phase failed! Aborting..."
     exit 3
+  elif [[ $TYPE == "build" ]];
+  then
+    msg "* Build/Compile phase failed! Aborting..."
+    exit 4
+  elif [[ $TYPE == "mergepkg" ]];
+  then
+    msg "* Merge/Install phase failed! Aborting..."
+    exit 5
   fi
-}
-
-_echoc ()
-{
-  echo -e "\E["$1"m$2\E[0m";
-}
-
-info ()
-{
-  _echoc 33 "$@"
-}
-
-msg ()
-{
-  _echoc 31 "$@"
 }
 
 setup ()
@@ -67,7 +44,11 @@ prepare ()
 
 fetch_pkg ()
 {
-  if [ ! -f $SRC_FILE.* ];then
+  if [[ ! -f $SRC_FILE.*.* ]]; then
+    rm $SRC_FILE.*.*
+  fi
+
+  if [[ ! -f $SRC_FILE.* ]]; then
     info "* Trying to fetch $SRC_FILE"
     wget -P $SRC_DIR $SRC_URL
   fi
@@ -105,7 +86,7 @@ build ()
 
 check ()
 {
-   info "* Sorry, no tests available"
+  info "* Sorry, no tests available"
 }
 
 merge ()
@@ -127,20 +108,20 @@ clean ()
 
 mem_installed()
 {
-	if [[ -f $INSTALLED_DIR/$PN ]]; 
-	then
-					info "* This package was already installed..."
-					echo -ne ".\r"
-					sleep 1
-					echo -ne "..\r"
-					sleep 1
-					echo -ne "...\r"
-					sleep 1
-					info "* Skipping phase..."
-	else
-					info "* Updating installed packages directory..."
-					touch $INSTALLED_DIR/$PN
-	fi
+  if [[ -f $INSTALLED_DIR/$PN ]];
+  then
+    info "* This package was already installed..."
+    echo -ne ".\r"
+    sleep 1
+    echo -ne "..\r"
+    sleep 1
+    echo -ne "...\r"
+    sleep 1
+    info "* Skipping phase..."
+  else
+    info "* Updating installed packages directory..."
+    touch $INSTALLED_DIR/$PN
+  fi
 }
 
 export BONSAI_DIR SRC_URL SRC_DIR SRC_FILE BUILD_DIR
