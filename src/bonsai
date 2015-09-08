@@ -23,7 +23,14 @@ opt_install ()
       return
     fi
 
-    PKG="$BONSAI_DIR/pkgtree/${PN}.pkg"
+    PKG=""
+    if [[ "$PN" == *.pkg ]]; then
+      PKG="./$PN"
+      PN=${PN::-4}
+    else
+      PKG="$BONSAI_DIR/pkgtree/${PN}.pkg"
+    fi
+
     if [ ! -f "$PKG" ]; then
       pwd
       msg "* This package: \"$PN\" was not found!"

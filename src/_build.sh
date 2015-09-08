@@ -44,7 +44,11 @@ prepare ()
 
 fetch_pkg ()
 {
-  if [ ! -f $SRC_FILE.* ];then
+  if [[ ! -f $SRC_FILE.*.* ]]; then
+    rm $SRC_FILE.*.*
+  fi
+
+  if [[ ! -f $SRC_FILE.* ]]; then
     info "* Trying to fetch $SRC_FILE"
     wget -P $SRC_DIR $SRC_URL
   fi
