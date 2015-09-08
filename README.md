@@ -9,6 +9,7 @@ I'm planning to enable the build of /tools. I have some scripts for that but I s
  
  - Package tree repository has created! { github.com/viralex/bonsai-pkgtree} , to keep updated run "bonsai -S" as root :D
  - Configuration file of bonsai is now */etc/bonsai/bonsai.conf*
+ - All optional args were done (yeee)
 
 ### WARNING:
 These release are *NOT* for daily use!
@@ -39,7 +40,7 @@ root@machine:~/Devel/Shellscript/bonsai # make uninstall_keep_dir -s
 
 The '*-s*' make option doesn't show instruction (already echoing)
 
-### Features [0.0.6-1]:
+### Features [0.0.7]:
 
 Bonsai has a bit working options:
   
@@ -56,18 +57,29 @@ Other arguments:
 	- Help (--help: shows bonsai help [more detailed])
 	- Nocheck (--nocheck: skips compiled-packages checks)
 	- Packages (--packages: shows availible packages) 
+	- Quiet (-Q/--quiet: standard output will not be shown [useful if your hardware is slow])
 
 Features listed above are *Working*
+
+===
 
 Features that are going to be implemented:
 	
 	- [TODO/NEXT]Remove (-R/--remove: removes installed packages)
 	- [TODO]Update system (-U: updates your system)
-	- [TODO]Quiet installing (-Q: no output)
 
 Features listed above are *WIP*
 
-### Example:
+### Bonsai directories:
+
+Bonsai uses other code/configs to work great!
+
+ - /usr/bin/bonsai : main
+ - /usr/bonsai : contains pkgtree, shellscripts 
+ - /var/bonsai : contains infos about packages
+ - /etc/bonsai : contains config files
+
+### Example[OLD-0.0.3]:
 ~~~
 root:/# bonsai -I gzip
 Bonsai-0.0.3
