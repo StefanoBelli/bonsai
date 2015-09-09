@@ -14,12 +14,15 @@ I'm planning to enable the build of /tools. I have some scripts for that but I s
 
 ### WARNING:
 These release are *NOT* for daily use!
+
 This is development stage!
+
 We will get a full-working release when 0.1 is reached!
+
 *Make sure to run the sync command before starting to use bonsai.
 Sync repo with this command:*
 ~~~
-root:/ # bonsai -S
+# bonsai -S
 ~~~
 We will fix packages only after the package manager reaches daily-usage release! (High priority: 0.1)
 
@@ -28,14 +31,14 @@ We will fix packages only after the package manager reaches daily-usage release!
 # make
 ~~~
 
-Uninstall...
+Uninstall *ONLY* /usr/bin/bonsai...
 ~~~
 # make uninstall
 ~~~
 
-Uninstall keeping directory (/usr/bonsai)
+Uninstall deleting all directory with their files (/usr/bonsai,/etc/bonsai,/var/bonsai)
 ~~~
-# make uninstall_keep_dir
+# make uninstall_all
 ~~~
 
 ### Features [0.0.8-3]:
