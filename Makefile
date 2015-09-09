@@ -8,18 +8,18 @@ install:
 	cp src/bonsai.conf /etc/bonsai/bonsai.conf && echo "* Config file -> /etc/bonsai/bonsai.conf" || exit 1
 	cp src/bonsai /usr/bin/bonsai && echo "* Bonsai package manager was installed" || exit 1
 
-uninstall:
+uninstall_all:
 	rm -r /etc/bonsai && echo "* /etc/bonsai deleted (and all its content)" || exit 1
 	rm -r /usr/bonsai && echo "* /usr/bonsai deleted (and all its content)" || exit 1
 	rm -r /var/bonsai && echo "* /var/bonsai deleted (and all its content)" || exit 1
 	rm /usr/bin/bonsai && echo "* Bonsai package manager was uninstalled... Bye!" || exit 1
 
-uninstall_keep_dir:
-	echo "* Removing Bonsai package manager keeping /usr/bonsai directory and all its files..." 
-	rm /usr/bin/bonsai && echo "* Bonsai package manager was uninstalled, keeping /usr/bonsai & /var/bonsai... Bye!" || exit 1
+uninstall:
+	echo "* Removing Bonsai package manager keeping /usr/bonsai,/var/bonsai and /etc/bonsai directories and all its files..." 
+	rm /usr/bin/bonsai && echo "* Bonsai package manager was uninstalled, keeping /usr/bonsai , /var/bonsai, /etc/bonsai... Bye!" || exit 1
 
 .PHONY:
-	install,uninstall,uninstall_keep_dir
+	install,uninstall,uninstall_all
 
 ifndef VERBOSE
 .SILENT:
