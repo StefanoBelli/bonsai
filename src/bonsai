@@ -1,7 +1,7 @@
 #!/bin/bash
 
 BONSAI_NAME="Bonsai"
-BONSAI_VERSION="0.0.7-1"
+BONSAI_VERSION="0.0.8"
 
 source /etc/bonsai/bonsai.conf
 source /usr/bonsai/_functions.sh
@@ -81,6 +81,57 @@ opt_install ()
   exit 0
 }
 
+upgrade()
+{
+	  PN=$1
+    PKG=""
+    if [[ "$PN" == *.pkg ]]; then
+      PKG="./$PN"
+      PN=${PN::-4}
+    else
+      PKG="$BONSAI_DIR/pkgtree/${PN}.pkg"
+    fi
+
+    QUIET=""
+    if [ $quiet_flag == "yes" ];then
+       QUIET=">> /dev/null 2>&1"
+    fi
+
+    eval "source $PKG $QUIET"
+
+    eval "setup $QUIET"
+
+		if [ $pretend_flag == "yes" ];then
+			 fetch_pkg && echo "" || opfault "fetch"
+			 exit 0
+		fi
+
+    eval "prepare $QUIET"
+
+    info "* Source configure phase..."
+    eval "configure $QUIET && echo \"\" || opfault \"configure\""
+
+    info "* Source build phase..."
+    eval "build $QUIET && echo \"\" || opfault \"build\""
+
+    if [ $check_flag == yes ];then
+      info "* Checking phase..."
+      eval "check $QUIET"
+    fi
+    
+    info "* Install/Merge phase..."
+    eval "merge $QUIET && echo \"\" || opfault \"mergepkg\""
+
+    eval "extra $QUIET"
+
+    if [ $noclean_flag == no ];then
+      info "* Cleaning..."
+      eval "clean $QUIET"
+    else
+      cd -
+    fi
+}
+
 opt_help()
 {
   info "$BONSAI_NAME-$BONSAI_VERSION\n\
@@ -92,7 +143,7 @@ bonsai -R pkgname -> remove           [TODO]
 bonsai -Q pattern -> search           [DONE]
 bonsai -D pattern -> search + desc    [DONE]
 bonsai -L         -> list installed.  [DONE]
-bonsai -U         -> update system    [TODO]
+bonsai -U         -> update system    [DONE]
 bonsai -S         -> sync files.      [DONE]
 
 +------------------------------------------+
@@ -211,6 +262,40 @@ opt_listinstalled()
   done
 }
 
+opt_upgrade()
+{
+	check_user
+	info "Bonsai-$BONSAI_VERSION"
+	info "* Syncing repositories before system upgrade... Wait..."
+	opt_sync >>/dev/null
+	info "* Done... Checking packages"
+	sleep 1
+	LIST_INSTALLED_PKGS=$(ls -l $INSTALLED_DIR | awk '{ print $9 }')
+	for listpkg in $LIST_INSTALLED_PKGS; 
+	do
+					source $INSTALLED_DIR/$listpkg
+					source /usr/bonsai/pkgtree/$listpkg\.pkg
+					PKG_CURRENT_VERSION=$CURRENT_VERSION
+					PKG_NEXT=$VERSION
+					if [[ $PKG_CURRENT_VERSION != $PKG_NEXT ]];
+					then
+									info "* [UPGRADE] Update for $listpkg availible!"
+									echo -n "* Would you like to upgrade $listpkg from $PKG_CURRENT_VERSION to $PKG_NEXT [Y/n]? "; read IF_UPGRADE
+									case $IF_UPGRADE in
+													"y" | "Y" ) 
+																	upgrade $listpkg 
+																	sed -i "s/CURRENT_VERSION=\"$PKG_CURRENT_VERSION\"/CURRENT_VERSION=\"$PKG_NEXT\"/g" $INSTALLED_DIR/$listpkg;;
+													"n" | "N" ) info "* Skipping $listpkg" ;;
+													*) break ;;
+									esac
+					elif [[ $PKG_CURRENT_VERSION == $PKG_NEXT ]];
+					then
+									info "* [OK] $listpkg is already updated :) no upgrade required"
+					fi
+	done
+	info "* Done"
+}
+
 install_flag=no
 remove_flag=no
 query_flag=no
@@ -220,8 +305,8 @@ pretend_flag=no
 searchdesc_flag=no
 quiet_flag=no
 
-if ! options=$(getopt -o I:R:Q:D:SLqncphv -l \
-             install:,remove:,query:,desc:,sync,noclean,check,pretend,help,version,packages,installed,quiet -- "$@")
+if ! options=$(getopt -o I:R:Q:D:SLUqncphv -l \
+             install:,remove:,query:,desc:,sync,noclean,check,pretend,help,version,packages,installed,quiet,upgrade -- "$@")
 then
     exit 1
 fi
@@ -244,6 +329,7 @@ do
     --packages) opt_pkglist ;;
     -L|--installed) opt_listinstalled;;
     -q|--quiet) quiet_flag=yes;;
+		-U|--upgrade) opt_upgrade;;
     (--) shift; break;;
     (-*) echo "$BONSAI_NAME: error - unrecognized option $1" 1>&2; exit 1;;
     (*) break;;

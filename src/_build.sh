@@ -120,7 +120,8 @@ mem_installed()
     info "* Skipping phase..."
   else
     info "* Updating installed packages directory..."
-    touch $INSTALLED_DIR/$PN
+    touch $INSTALLED_DIR/$PN && echo "#! /bin/bash " > $INSTALLED_DIR/$PN || info "* Error while creating pkgfile"
+		echo "CURRENT_VERSION=\"$VERSION\"" >> $INSTALLED_DIR/$PN
   fi
 }
 
