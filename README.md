@@ -2,23 +2,22 @@
 Minimal Linux from Scratch package manager and repository. (WIP not really ready for use)
 
 This project is born while I was building my first LFS-7.7-systemd system. Some of the packages are probably broken or incomplete they will be fixed you may still find it useful!
-The program currently works after the first chroot.
+The program currently works after the first chroot or you can test it in any GNU/Linux system.
 I'm planning to enable the build of /tools. I have some scripts for that but I still have to integrate in the pkg manager.
 
 ### LATEST NEWS!
- 
- - Package tree repository has created! { github.com/viralex/bonsai-pkgtree} , to keep updated run "bonsai -S" as root :D
+
+ - Package tree repository has been created! {github.com/viralex/bonsai-pkgtree} , run "bonsai -S" to update the repository :D
  - Configuration file of bonsai is now */etc/bonsai/bonsai.conf*
  - All optional args were done (yeee)
  - We need to implement pkgs remove + fix bugs/correct something before get 0.1 :)
 
 ### WARNING:
 These release are *NOT* for daily use!
-This is development stage! 
+This is development stage!
 We will get a full-working release when 0.1 is reached!
-And... another thing... 
-*IF YOU TRY TO INSTALL PACKAGES AFTER BONSAI INSTALL, YOU WILL FAIL! SO, BEFORE YOU START USING BONSAI, 
-SYNC REPOSITORIES! WITH THIS COMMAND:*
+*Make sure to run the sync command before starting to use bonsai.
+Sync repo with this command:*
 ~~~
 root:/ # bonsai -S
 ~~~
@@ -26,23 +25,23 @@ We will fix packages only after the package manager reaches daily-usage release!
 
 ### How to install/uninstall bonsai:
 ~~~
-root@machine:~/Devel/Shellscript/bonsai # make
+# make
 ~~~
 
 Uninstall...
 ~~~
-root@machine:~/Devel/Shellscript/bonsai # make uninstall
+# make uninstall
 ~~~
 
 Uninstall keeping directory (/usr/bonsai)
 ~~~
-root@machine:~/Devel/Shellscript/bonsai # make uninstall_keep_dir
+# make uninstall_keep_dir
 ~~~
 
-### Features [0.0.8-2]:
+### Features [0.0.8-3]:
 
-Bonsai has a bit working options:
-  
+Bonsai currently implemented options:
+
 	- Install(-I/--install: get source,extract,configure,compile,(check),(extras),clean)
 	- Query(-Q/--query: search for availible pkgs)
 	- Description(-D/--desc: search for a package and shows details)
@@ -51,22 +50,22 @@ Bonsai has a bit working options:
 	- System upgrade (-U/--upgrade: upgrade system packages)
 
 Other arguments:
-  
+
 	- Pretend (--pretend)
 	- Version (--version: shows bonsai version)
 	- Help (--help: shows bonsai help [more detailed])
 	- Nocheck (--nocheck: skips compiled-packages checks)
 	- Packages (--packages: shows availible packages) 
 	- Quiet (-Q/--quiet: standard output will not be shown [useful if your hardware is slow])
-	- Confirm for install (-a/--confirm: confirm before package install)
+	- Confirm for install (-a/--ask: confirm before package install)
 
 Features listed above are *Working*
 
 ===
 
 Features that are going to be implemented:
-	
-	- [TODO/NEXT]Remove (-R/--remove: removes installed packages)
+
+	- [TODO]Remove (-R/--remove: removes installed packages)
 
 Features listed above are *WIP*
 
@@ -79,30 +78,37 @@ Bonsai uses other code/configs to work great!
  - /var/bonsai : contains infos about packages
  - /etc/bonsai : contains config files
 
-### Example[OLD-0.0.3]:
+### Example:
 ~~~
-root:/# bonsai -I gzip
-Bonsai-0.0.3
-Installing: gzip --
+root:/# bonsai -I dwm
+Bonsai-0.0.8-3
 
-setup gzip-1.6...
+* Installing: dwm --
 
-unpacking src...
-mkdir: created directory '/var/tmp/gzip-src'
-configure phase
-checking for a BSD-compatible install... /usr/bin/install -c
-checking whether build environment is sane... yes
-checking for a thread-safe mkdir -p... /bin/mkdir -p
-checking for gawk... gawk
+* Setup:  dwm-6.0...
+
+* Trying to fetch /usr/src/dwm-6.0
+--2015-09-09 13:30:21--  http://dl.suckless.org/dwm/dwm-6.0.tar.gz
+Resolving dl.suckless.org... 78.47.162.114
+Connecting to dl.suckless.org|78.47.162.114|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 20810 (20K) [application/octet-stream]
+Saving to: ‘/usr/src/dwm-6.0.tar.gz’
+
+dwm-6.0.tar.gz                                              100%[===========================================================================================================================================>]  20.32K  --.-KB/s   in 0.08s  
+
+2015-09-09 13:30:22 (239 KB/s) - ‘/usr/src/dwm-6.0.tar.gz’ saved [20810/20810]
+
+* Unpacking sources...
+mkdir: created directory ‘/var/tmp/dwm-src’
+* Source configure phase...
+
+* Source build phase...
 ~~~
-
-### Added packages:
-
- - DWM (06/09/2015) [DD/MM/YYYY]
 
 ### How to add a package file:
 ~~~
-DESCRIPTION="" 
+DESCRIPTION=""
 HOMEPAGE=""
 LICENSE=""
 VERSION=""
@@ -129,4 +135,10 @@ merge()
 {
 	# Merging to system instructions
 }
+~~~
+
+### How to test a package:
+
+~~~
+root:/# bonsai -I package.pkg
 ~~~
