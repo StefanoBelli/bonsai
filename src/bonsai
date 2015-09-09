@@ -1,16 +1,16 @@
 #!/bin/bash
 
 BONSAI_NAME="Bonsai"
-BONSAI_VERSION="0.0.8"
+BONSAI_VERSION="0.0.8-2"
 
 source /etc/bonsai/bonsai.conf
 source /usr/bonsai/_functions.sh
 source /usr/bonsai/_build.sh
 
+info "Bonsai-$BONSAI_VERSION"
 opt_install ()
 {
   check_user
-  info "Bonsai-$BONSAI_VERSION"
 
   params=${*//\'}
   params=${params/ -- / }
@@ -53,6 +53,20 @@ opt_install ()
     fi
 
     eval "prepare $QUIET"
+    if [ $confirm_flag == "yes" ];
+    then
+			 echo -ne "\033[33m* Would you like to install "
+			 echo -ne "\033[0m\033[32m$PN\033[0m [Y/n]? "
+       read INSTALL
+       case $INSTALL in
+							 "Y"|"y") echo "";;
+							 "N"|"n") 
+											 info "Aborting..."
+											 exit 0;;
+       esac
+    else
+       echo ""
+    fi
 
     info "* Source configure phase..."
     eval "configure $QUIET && echo \"\" || opfault \"configure\""
@@ -78,63 +92,11 @@ opt_install ()
     fi
     mem_installed
   done
-  exit 0
-}
-
-upgrade()
-{
-	  PN=$1
-    PKG=""
-    if [[ "$PN" == *.pkg ]]; then
-      PKG="./$PN"
-      PN=${PN::-4}
-    else
-      PKG="$BONSAI_DIR/pkgtree/${PN}.pkg"
-    fi
-
-    QUIET=""
-    if [ $quiet_flag == "yes" ];then
-       QUIET=">> /dev/null 2>&1"
-    fi
-
-    eval "source $PKG $QUIET"
-
-    eval "setup $QUIET"
-
-		if [ $pretend_flag == "yes" ];then
-			 fetch_pkg && echo "" || opfault "fetch"
-			 exit 0
-		fi
-
-    eval "prepare $QUIET"
-
-    info "* Source configure phase..."
-    eval "configure $QUIET && echo \"\" || opfault \"configure\""
-
-    info "* Source build phase..."
-    eval "build $QUIET && echo \"\" || opfault \"build\""
-
-    if [ $check_flag == yes ];then
-      info "* Checking phase..."
-      eval "check $QUIET"
-    fi
-    
-    info "* Install/Merge phase..."
-    eval "merge $QUIET && echo \"\" || opfault \"mergepkg\""
-
-    eval "extra $QUIET"
-
-    if [ $noclean_flag == no ];then
-      info "* Cleaning..."
-      eval "clean $QUIET"
-    else
-      cd -
-    fi
 }
 
 opt_help()
 {
-  info "$BONSAI_NAME-$BONSAI_VERSION\n\
+  info "\
 $BONSAI_NAME package manager - Help page
 +------------------------------------------+
      <opt> [arg]    [action]        {status}
@@ -157,6 +119,7 @@ Other arguments
 --noclean / -n   -> do not run clean         [DONE]
 --check / -c     -> run checks after build.  [DONE]
 --packages       -> lists all avail. pkgs    [DONE]
+--confirm /-a    -> asks for install         [DONE]
 +-------------------------------------------------+
 
 Bonsai directories
@@ -184,7 +147,6 @@ opt_version()
 opt_pkglist()
 {
   LIST_PACKAGES=$(ls $BONSAI_DIR/pkgtree -l 2>/dev/null | awk '{ print $9 }' | sed 's/.pkg//g')
-  info "$BONSAI_NAME-$BONSAI_VERSION"
   info "\nAvailible packages\n**********"
   info "$LIST_PACKAGES"
   info "**********\nAvailible packages"
@@ -196,7 +158,6 @@ opt_query()
   param=${param/ -- /}
   SEARCH_PKG=$(ls $BONSAI_DIR/pkgtree -l 2>/dev/null | awk '{ print $9 }' | sed 's/.pkg//g' | grep $param)
   QUERY_RES=$SEARCH_PKG
-  info "$BONSAI_NAME-$BONSAI_VERSION"
   info "* You searched for: $param\n"
   for i in $QUERY_RES ;do
          echo -n "--> "; info $i
@@ -206,7 +167,6 @@ opt_query()
 opt_sync ()
 {
   check_user
-  info "$BONSAI_NAME-$BONSAI_VERSION"
   info "* Syncing pkgtree: $BONSAI_TREE"
 
   if which git >/dev/null; then
@@ -245,7 +205,6 @@ opt_querydesc()
 {
   param=${*//\'}
   param="${param/ -- /}.pkg"
-  info "$BONSAI_NAME-$BONSAI_VERSION"
   info "* You searched description for: $param\n" | sed "s/.pkg//"
   source $BONSAI_DIR/pkgtree/$param 2>/dev/null && list_desc || exit 3
 }
@@ -254,7 +213,6 @@ opt_listinstalled()
 {
   check_user
   LISTDIR=$(ls -l $INSTALLED_DIR | awk '{ print $9 }')
-  info "Bonsai-$BONSAI_VERSION"
   info "* Installed packages by Bonsai\n"
   for i in $LISTDIR;
   do
@@ -265,7 +223,6 @@ opt_listinstalled()
 opt_upgrade()
 {
 	check_user
-	info "Bonsai-$BONSAI_VERSION"
 	info "* Syncing repositories before system upgrade... Wait..."
 	opt_sync >>/dev/null
 	info "* Done... Checking packages"
@@ -280,14 +237,9 @@ opt_upgrade()
 					if [[ $PKG_CURRENT_VERSION != $PKG_NEXT ]];
 					then
 									info "* [UPGRADE] Update for $listpkg availible!"
-									echo -n "* Would you like to upgrade $listpkg from $PKG_CURRENT_VERSION to $PKG_NEXT [Y/n]? "; read IF_UPGRADE
-									case $IF_UPGRADE in
-													"y" | "Y" ) 
-																	upgrade $listpkg 
-																	sed -i "s/CURRENT_VERSION=\"$PKG_CURRENT_VERSION\"/CURRENT_VERSION=\"$PKG_NEXT\"/g" $INSTALLED_DIR/$listpkg;;
-													"n" | "N" ) info "* Skipping $listpkg" ;;
-													*) break ;;
-									esac
+									info "* Upgrading $listpkg from $PKG_CURRENT_VERSION to $PKG_NEXT ..."
+									opt_install $listpkg
+									sed -i "s/CURRENT_VERSION=\"$PKG_CURRENT_VERSION\"/CURRENT_VERSION=\"$PKG_NEXT\"/g" $INSTALLED_DIR/$listpkg
 					elif [[ $PKG_CURRENT_VERSION == $PKG_NEXT ]];
 					then
 									info "* [OK] $listpkg is already updated :) no upgrade required"
@@ -304,9 +256,10 @@ check_flag=no
 pretend_flag=no
 searchdesc_flag=no
 quiet_flag=no
+confirm_flag=no
 
-if ! options=$(getopt -o I:R:Q:D:SLUqncphv -l \
-             install:,remove:,query:,desc:,sync,noclean,check,pretend,help,version,packages,installed,quiet,upgrade -- "$@")
+if ! options=$(getopt -o I:R:Q:D:SLUqncphva -l \
+             install:,remove:,query:,desc:,sync,noclean,check,pretend,help,version,packages,installed,quiet,upgrade,confirm -- "$@")
 then
     exit 1
 fi
@@ -330,6 +283,7 @@ do
     -L|--installed) opt_listinstalled;;
     -q|--quiet) quiet_flag=yes;;
 		-U|--upgrade) opt_upgrade;;
+		-a|--confirm) confirm_flag=yes;;
     (--) shift; break;;
     (-*) echo "$BONSAI_NAME: error - unrecognized option $1" 1>&2; exit 1;;
     (*) break;;

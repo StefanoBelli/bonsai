@@ -41,7 +41,7 @@ root@machine:~/Devel/Shellscript/bonsai # make uninstall_keep_dir -s
 
 The '*-s*' make option doesn't show instruction (already echoing)
 
-### Features [0.0.8]:
+### Features [0.0.8-2]:
 
 Bonsai has a bit working options:
   
@@ -60,6 +60,7 @@ Other arguments:
 	- Nocheck (--nocheck: skips compiled-packages checks)
 	- Packages (--packages: shows availible packages) 
 	- Quiet (-Q/--quiet: standard output will not be shown [useful if your hardware is slow])
+	- Confirm for install (-a/--confirm: confirm before package install)
 
 Features listed above are *Working*
 
