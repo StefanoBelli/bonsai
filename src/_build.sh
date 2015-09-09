@@ -39,7 +39,7 @@ setup ()
 
 prepare ()
 {
-   fetch_pkg && prepare_src || msg "* Fetch Failed\n"
+   fetch_pkg && prepare_src || opfault "fetch"
 }
 
 fetch_pkg ()
