@@ -23,4 +23,9 @@ msg ()
   _echoc 31 "$@"
 }
 
-export -f info msg check_user
+banner ()
+{
+  info "Bonsai-$BONSAI_VERSION\n"
+}
+
+export -f info msg check_user banner
