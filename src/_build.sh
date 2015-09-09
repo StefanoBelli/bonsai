@@ -1,6 +1,4 @@
 #!/bin/bash
-INSTALLED_DIR=/var/bonsai/installed
-VAR_DIR=/var/bonsai
 
 opfault()
 {
@@ -76,12 +74,15 @@ prepare_src_ext_build ()
 
 configure ()
 {
-   :
+  #TODO maybe $EXTRA_CONF
+  if [ -f configure.ac ]; then
+    ./configure --prefix=/usr
+  fi
 }
 
 build ()
 {
-   :
+  make
 }
 
 check ()
@@ -91,7 +92,7 @@ check ()
 
 merge ()
 {
-   :
+  make install
 }
 
 extra ()
@@ -120,8 +121,7 @@ mem_installed()
     info "* Skipping phase..."
   else
     info "* Updating installed packages directory..."
-    touch $INSTALLED_DIR/$PN && echo "#! /bin/bash " > $INSTALLED_DIR/$PN || info "* Error while creating pkgfile"
-		echo "CURRENT_VERSION=\"$VERSION\"" >> $INSTALLED_DIR/$PN
+    echo "VERSION=\"$VERSION\"" > $INSTALLED_DIR/$PN || info "* Error while creating pkgfile"
   fi
 }
 
