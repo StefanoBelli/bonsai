@@ -26,20 +26,18 @@ We will fix packages only after the package manager reaches daily-usage release!
 
 ### How to install/uninstall bonsai:
 ~~~
-root@machine:~/Devel/Shellscript/bonsai # make -s
+root@machine:~/Devel/Shellscript/bonsai # make
 ~~~
 
 Uninstall...
 ~~~
-root@machine:~/Devel/Shellscript/bonsai # make uninstall -s
+root@machine:~/Devel/Shellscript/bonsai # make uninstall
 ~~~
 
 Uninstall keeping directory (/usr/bonsai)
 ~~~
-root@machine:~/Devel/Shellscript/bonsai # make uninstall_keep_dir -s 
+root@machine:~/Devel/Shellscript/bonsai # make uninstall_keep_dir
 ~~~
-
-The '*-s*' make option doesn't show instruction (already echoing)
 
 ### Features [0.0.8-2]:
 
