@@ -41,7 +41,7 @@ Uninstall deleting all directory with their files (/usr/bonsai,/etc/bonsai,/var/
 # make uninstall_all
 ~~~
 
-### Features [0.0.8-3]:
+### Features [0.0.8-4]:
 
 Bonsai currently implemented options:
 
@@ -61,6 +61,7 @@ Other arguments:
 	- Packages (--packages: shows availible packages) 
 	- Quiet (-Q/--quiet: standard output will not be shown [useful if your hardware is slow])
 	- Confirm for install (-a/--ask: confirm before package install)
+	- Showing settings (-e/--conf: shows settings from config file for bonsai)
 
 Features listed above are *Working*
 
