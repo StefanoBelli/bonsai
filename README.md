@@ -11,6 +11,7 @@ I'm planning to enable the build of /tools. I have some scripts for that but I s
  - Configuration file of bonsai is now */etc/bonsai/bonsai.conf*
  - All optional args were done (yeee)
  - We need to implement pkgs remove + fix bugs/correct something before get 0.1 :)
+ - Now MAKE_FLAGS is integrated in /etc/bonsai/bonsai.conf, you can also choose the using editor
 
 ### WARNING:
 These release are *NOT* for daily use!
@@ -41,7 +42,7 @@ Uninstall deleting all directory with their files (/usr/bonsai,/etc/bonsai,/var/
 # make uninstall_all
 ~~~
 
-### Features [0.0.8-4]:
+### Features [0.0.8-5]:
 
 Bonsai currently implemented options:
 
@@ -119,6 +120,11 @@ VERSION=""
 SRC_URL="" #this contain direct link to package
 REPO=""
 HASH=""
+
+if_editor()
+{
+  # if you need to configure something before compilation, otherwise leave ':'
+}
 
 configure()
 {

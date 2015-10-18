@@ -1,7 +1,7 @@
 #!/bin/bash
 
 BONSAI_NAME="Bonsai"
-BONSAI_VERSION="0.0.8-4"
+BONSAI_VERSION="0.0.8-5"
 BONSAI_CONF="/etc/bonsai/bonsai.conf"
 
 source $BONSAI_CONF
@@ -67,11 +67,15 @@ opt_install ()
        esac
     fi
 
+		#This function MUST Not be evaluated for $QUIET!
+		if_editor
+
     info "* Source configure phase..."
     eval "configure $QUIET && echo \"\" || opfault \"configure\""
 
-    info "* Source build phase..."
-    eval "build $QUIET && echo \"\" || opfault \"build\""
+		info "* Source build phase..."
+		info "* Using make flags : $MAKE_FLAGS"
+    eval "build  $QUIET && echo \"\" || opfault \"build\""
 
     if [ $check_flag == yes ];then
       info "* Checking phase..."
@@ -266,6 +270,7 @@ opt_show_conf()
  info "--> Build temp. dir : $BUILD_DIR"
  echo "===OTHER==="
  info "--> Using editor    : $CONFIG_EDITOR"
+ info "--> Make flags      : $MAKE_FLAGS"
 }
 
 install_flag=no

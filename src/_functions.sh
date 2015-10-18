@@ -28,4 +28,9 @@ banner ()
   info "Bonsai-$BONSAI_VERSION\n"
 }
 
-export -f info msg check_user banner
+if_editor ()
+{
+	:
+}
+
+export -f info msg check_user banner if_editor
