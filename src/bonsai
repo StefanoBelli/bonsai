@@ -1,9 +1,10 @@
 #!/bin/bash
 
 BONSAI_NAME="Bonsai"
-BONSAI_VERSION="0.0.8-3"
+BONSAI_VERSION="0.0.8-5"
+BONSAI_CONF="/etc/bonsai/bonsai.conf"
 
-source /etc/bonsai/bonsai.conf
+source $BONSAI_CONF
 source /usr/bonsai/_functions.sh
 source /usr/bonsai/_build.sh
 
@@ -66,11 +67,15 @@ opt_install ()
        esac
     fi
 
+		#This function MUST Not be evaluated for $QUIET!
+		if_editor
+
     info "* Source configure phase..."
     eval "configure $QUIET && echo \"\" || opfault \"configure\""
 
-    info "* Source build phase..."
-    eval "build $QUIET && echo \"\" || opfault \"build\""
+		info "* Source build phase..."
+		info "* Using make flags : $MAKE_FLAGS"
+    eval "build  $QUIET && echo \"\" || opfault \"build\""
 
     if [ $check_flag == yes ];then
       info "* Checking phase..."
@@ -118,6 +123,7 @@ Other arguments
 --check / -c     -> run checks after build.  [DONE]
 --packages       -> lists all avail. pkgs    [DONE]
 --confirm /-a    -> asks for install         [DONE]
+--conf/-e        -> shows env. settings      [DONE]
 +-------------------------------------------------+
 
 Bonsai directories
@@ -246,6 +252,27 @@ opt_upgrade()
  info "* Done"
 }
 
+opt_show_conf()
+{
+ check_user
+
+ info "* From $BONSAI_CONF"
+ info "* $BONSAI_NAME Settings... "
+ echo "===DIRECTORIES==="
+ info "--> Main Directory : $BONSAI_DIR"
+ info "--> Var Directory  : $VAR_DIR"
+ info "--> Installed pkgs : $INSTALLED_DIR"
+ info "--> Sources dir    : $SRC_DIR"
+ echo "===PACKAGES==="
+ info "--> Package tree   : $BONSAI_TREE"
+ info "--> Package tree repo : $BONSAI_GIT_REPO"
+ echo "===SOURCES==="
+ info "--> Build temp. dir : $BUILD_DIR"
+ echo "===OTHER==="
+ info "--> Using editor    : $CONFIG_EDITOR"
+ info "--> Make flags      : $MAKE_FLAGS"
+}
+
 install_flag=no
 remove_flag=no
 query_flag=no
@@ -256,8 +283,8 @@ searchdesc_flag=no
 quiet_flag=no
 confirm_flag=no
 
-if ! options=$(getopt -o I:R:Q:D:SLUqncphva -l \
-             install:,remove:,query:,desc:,sync,noclean,check,pretend,help,version,packages,installed,quiet,upgrade,ask -- "$@")
+if ! options=$(getopt -o I:R:Q:D:SLUqncphvae -l \
+             install:,remove:,query:,desc:,sync,noclean,check,pretend,help,version,packages,installed,quiet,upgrade,ask,conf -- "$@")
 then
     exit 1
 fi
@@ -282,6 +309,7 @@ do
     -v|--version) opt_version ;;
     -q|--quiet) quiet_flag=yes;;
     -a|--ask) confirm_flag=yes;;
+		-e|--conf) opt_show_conf ;;
     (--) shift; break;;
     (-*) echo "$BONSAI_NAME: error - unrecognized option $1" 1>&2; exit 1;;
     (*) break;;
