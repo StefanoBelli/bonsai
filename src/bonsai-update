@@ -1,0 +1,76 @@
+#!/bin/bash
+
+BONSAI_CONF="/etc/bonsai/bonsai.conf"
+CURDIR=$(pwd)
+ARG=$1
+
+source $BONSAI_CONF
+source /usr/bonsai/_functions.sh
+
+cd $BONSAI_GIT_LOCAL_REPO
+
+if [[ $ARG == "--auto-install" ]];
+then
+			  info "* You might check before auto-installing"
+				check_user
+			  make install
+				exit 0
+elif [[ $ARG == "--auto-install-clean" ]];
+then
+				info "* You might check before auto-installing"
+				check_user
+				info "* This opt. removes all bonsai-related files/dirs."
+				echo -n "* Would you like to continue[y/N]? "
+				read CHOICE
+				case $CHOICE in
+								"y"|"Y") make uninstall_all && make install ; exit 0 ;;
+								"n"|"N") info "* Aborting..." ; exit 0 ;;
+								*) info "*Non-valid option: $ARG" ; exit 1 ;;
+				esac
+elif [[ $ARG == "--auto-uninstall" ]];
+then
+				info "* Uninstalling... Excluding files and this"
+				make uninstall
+				exit 0
+
+elif [[ $ARG == "--auto-uninstall-all" ]];
+then
+				info "* Uninstalling all"
+				echo -n "* Would you like to continue[y/N]? "
+				read CHOICE
+				case $CHOICE in
+								"y"|"Y") make uninstall_all ; exit 0 ;;
+								"n"|"N") info "* Aborting..." ; exit 0 ;;
+								*) info "*Non-valid option: $ARG" ; exit 1 ;;
+				esac
+elif [[ $ARG == "--help" ]];
+then
+				info "* This is a small script for bonsai maintenance."
+				info "+--+"
+				info "bonsai-update (without args) only checks for updates from git repo"
+				info "bonsai-update --help         shows this"
+				info "bonsai-update --auto-install installs latest scripts/files"
+				info "bonsai-update --auto-install-clean installs latest script/files cleaning all"
+				info "bonsai-update --auto-uninstall uninstalls bonsai keeping all other things "
+				info "bonsai-update --auto-uninstall-all uninstalls bonsai + all other files"
+				info "+--+"
+				exit 0
+fi
+
+if which git >/dev/null;
+then
+				if [ -d .git ];
+				then
+								info "* [User: $USER] Trying to fetch latest commits..."
+								git pull 2> /dev/null
+								info "* Done."
+				else
+								msg "* [User: $USER] FATAL! -- $BONSAI_GIT_LOCAL_REPO -- is not a git repository!!"
+								exit 1
+				fi
+else
+				msg "* Git is not installed!"
+				exit 2
+fi
+
+

@@ -12,7 +12,8 @@ I'm planning to enable the build of /tools. I have some scripts for that but I s
  - All optional args were done (yeee)
  - We need to implement pkgs remove + fix bugs/correct something before get 0.1 :)
  - Now MAKE_FLAGS is integrated in /etc/bonsai/bonsai.conf, you can also choose the using editor
-
+ - bonsai-update allows you to install,uninstall,update bonsai 
+ 
 ### WARNING:
 These release are *NOT* for daily use!
 
@@ -151,4 +152,12 @@ merge()
 
 ~~~
 root:/# bonsai -I package.pkg
+~~~
+
+### Bonsai Update Script
+
+A simple script that helps you to keep bonsai updated
+
+~~~
+bonsai-update --help
 ~~~
