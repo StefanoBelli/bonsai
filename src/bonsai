@@ -8,7 +8,7 @@ source $BONSAI_CONF
 source /usr/bonsai/_functions.sh
 source /usr/bonsai/_build.sh
 
-banner
+#banner
 
 opt_install ()
 {
@@ -46,6 +46,18 @@ opt_install ()
     fi
 
     eval "source $PKG $QUIET"
+
+	for index in $DEPS;
+	do
+		msg "* Installing dependencies *"
+		if [ $quiet_flag == "yes" ];
+		then
+				bonsai -qI $index || exit 3
+		else
+				bonsai -I $index || exit 3
+		fi
+
+	done
 
     eval "setup $QUIET"
 
@@ -134,7 +146,7 @@ Bonsai directories
 /usr/bonsai : directory that contains pkgtree and some code
 |--> pkgtree/ : directory that contains *.pkg files(sh)
  |--> *.pkg : shellscripts that contains instructions for merging
-|--> _*.sh : code used (such as headers in C) in Bonsai  
+|--> _*.sh : functions used by bonsai 
 
 /var/bonsai : contains info about installed packages
 |--> installed : each file mean installed package
