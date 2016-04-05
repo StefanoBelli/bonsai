@@ -2,28 +2,31 @@
 
 opfault()
 {
-  TYPE=$1
-  if [[ $TYPE == "fetch" ]];
-  then
-    msg "* Fetch phase failed!! Aborting..."
-    exit 1
-  elif [[ $TYPE == "prepare" ]];
-  then
-    msg "* Prepare phase failed! Aborting..."
-    exit 2
-  elif [[ $TYPE == "configure" ]];
-  then
-    msg "* Configure phase failed! Aborting..."
-    exit 3
-  elif [[ $TYPE == "build" ]];
-  then
-    msg "* Build/Compile phase failed! Aborting..."
-    exit 4
-  elif [[ $TYPE == "mergepkg" ]];
-  then
-    msg "* Merge/Install phase failed! Aborting..."
-    exit 5
-  fi
+TYPE=$1
+case $TYPE in
+
+  fetch)
+    msg "* Fetch phase failed!! Aborting..." && exit 1
+  ;;
+
+  prepare)
+    msg "* Prepare phase failed! Aborting..." && exit 2
+  ;;
+
+  configure)
+    msg "* Configure phase failed! Aborting..." && exit 3
+  ;;
+
+  build)
+    msg "* Build/Compile phase failed! Aborting..." && exit 4
+  ;;
+
+  mergepkg)
+    msg "* Merge/Install phase failed! Aborting..." && exit 5
+  ;;
+esac
+}
+
 }
 
 setup ()
