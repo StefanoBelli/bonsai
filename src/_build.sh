@@ -27,8 +27,6 @@ case $TYPE in
 esac
 }
 
-}
-
 setup ()
 {
    #if [ "$SRC_FILE" == "" ];then
