@@ -93,7 +93,7 @@ opt_install ()
       info "* Checking phase..."
       eval "check $QUIET"
     fi
-    
+
     info "* Install/Merge phase..."
     eval "merge $QUIET && echo \"\" || opfault \"mergepkg\""
 
@@ -146,7 +146,7 @@ Bonsai directories
 /usr/bonsai : directory that contains pkgtree and some code
 |--> pkgtree/ : directory that contains *.pkg files(sh)
  |--> *.pkg : shellscripts that contains instructions for merging
-|--> _*.sh : functions used by bonsai 
+|--> _*.sh : functions used by bonsai
 
 /var/bonsai : contains info about installed packages
 |--> installed : each file mean installed package
@@ -189,10 +189,10 @@ opt_sync ()
      pushd . >/dev/null
      cd $BONSAI_TREE
      if [ -d .git ]; then
-       git pull
+       git pull >/dev/null && info "* Repository syncing done :) " || exit 2
      else
        msg "Cloning repo to $BONSAI_TREE"
-       git clone $BONSAI_GIT_REPO ./
+       git clone $BONSAI_GIT_REPO ./ >/dev/null && info "* Repository cloning done :) " || exit 2
      fi
      popd >/dev/null
   else
@@ -203,6 +203,8 @@ opt_sync ()
 
 list_desc()
 {
+  LOCATION=$BONSAI_DIR/pkgtree/$param
+
   [[ $DESCRIPTION == "" ]] && DESCRIPTION="N/A"
   [[ $HOMEPAGE == "" ]] && HOMEPAGE="N/A"
   [[ $VERSION == "" ]] && VERSION="N/A"
@@ -213,6 +215,7 @@ list_desc()
   echo -n "Homepage: " ;info "$HOMEPAGE"
   echo -n "Version: " ;info "$VERSION"
   echo -n "License: " ;info "$LICENSE"
+  echo -n "Pkgfile located at: $LOCATION"
 
   echo ""
 }

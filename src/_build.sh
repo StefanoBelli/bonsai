@@ -43,6 +43,11 @@ prepare ()
 
 fetch_pkg ()
 {
+  if ! which wget 2>/dev/null >>/dev/null; then
+    info "* Cannot find wget !! Aborting..."
+    exit 1
+  fi
+
   if [[ ! -f $SRC_FILE.*.* ]]; then
     rm $SRC_FILE.*.*
   fi
@@ -79,6 +84,8 @@ configure ()
   if [ -f configure.ac ]; then
     ./configure --prefix=/usr
   fi
+  #cmake
+  #qmake
 }
 
 build ()
@@ -113,12 +120,6 @@ mem_installed()
   if [[ -f $INSTALLED_DIR/$PN ]];
   then
     info "* This package was already installed..."
-    echo -ne ".\r"
-    sleep 1
-    echo -ne "..\r"
-    sleep 1
-    echo -ne "...\r"
-    sleep 1
     info "* Skipping phase..."
   else
     info "* Updating installed packages directory..."
